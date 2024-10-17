@@ -1,8 +1,12 @@
 <div>
   <app-todo-form (createdTask)="addTask($event)"></app-todo-form>
-  <p>{{todosDoneCounter()}} / {{todoList.length}}</p>
+  <form>
+    <input type="search" [(ngModel)]="searchKey" name="searchKey"/>
+    <button (click)="filterTasks()">search</button>
+  </form>
+  <p>{{todosDoneCounter()}} / {{todoList().length}}</p>
   <!-- <app-todo-counter [list]="todoList"></app-todo-counter> -->
-  @for (item of todoList; track item) {
+  @for (item of filteredList; track item) {
     <app-todo-item [todo]="item" (updatedTask)="updateTask($event)" (deletedTask)="deleteTask($event)"></app-todo-item>
   } @empty {
     <p>There are no items.</p>
