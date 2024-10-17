@@ -1,0 +1,14 @@
+<div>
+  @if(editing) {
+    <form [formGroup]="taskForm" (submit)="update()">
+      <input type="text" formControlName="task">
+      <button type="submit">save</button>
+      <button type="button" (click)="toggleEditing()">cancel</button>
+    </form>
+  } @else {
+    <label>
+      <input type="checkbox" [checked]="todo.done" (change)="toggleDone()">
+      <span>{{todo.task}} <button (click)="toggleEditing()">edit</button> <button (click)="delete()">del</button></span>
+    </label>
+  }
+</div>

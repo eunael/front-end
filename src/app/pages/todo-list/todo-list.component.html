@@ -1,0 +1,10 @@
+<div>
+  <app-todo-form (createdTask)="addTask($event)"></app-todo-form>
+  <p>{{todosDoneCounter()}} / {{todoList.length}}</p>
+  <!-- <app-todo-counter [list]="todoList"></app-todo-counter> -->
+  @for (item of todoList; track item) {
+    <app-todo-item [todo]="item" (updatedTask)="updateTask($event)" (deletedTask)="deleteTask($event)"></app-todo-item>
+  } @empty {
+    <p>There are no items.</p>
+  }
+</div>
