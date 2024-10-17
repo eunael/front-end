@@ -4,6 +4,10 @@
       <input type="text" formControlName="task">
       <button type="submit">save</button>
       <button type="button" (click)="toggleEditing()">cancel</button>
+      <div *ngIf="taskForm.controls['task'].invalid && (taskForm.controls['task'].dirty || taskForm.controls['task'].touched)">
+        <div *ngIf="taskForm.controls['task'].hasError('required')">Task is required.</div>
+        <div *ngIf="taskForm.controls['task'].hasError('minlength')">Task must be at least 4 characters long.</div>
+      </div>
     </form>
   } @else {
     <label>

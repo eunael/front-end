@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TodoData } from '../todo-form/todo-data';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-todo-item',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './todo-item.component.html',
   styleUrl: './todo-item.component.scss'
 })
@@ -18,7 +19,7 @@ export class TodoItemComponent {
 
   constructor() {
     this.taskForm = new FormGroup({
-      task: new FormControl('', Validators.required)
+      task: new FormControl('', [Validators.required, Validators.minLength(4)])
     })
   }
 
