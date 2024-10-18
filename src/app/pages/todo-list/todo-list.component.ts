@@ -1,19 +1,18 @@
-import { Component, computed, signal, Signal, SimpleChanges, WritableSignal } from '@angular/core';
+import { Component, signal, WritableSignal } from '@angular/core';
 import { TodoFormComponent } from "../../components/todo-form/todo-form.component";
 import { TodoItemComponent } from '../../components/todo-item/todo-item.component';
 import { TodoData } from '../../components/todo-form/todo-data';
-import { TodoCounterComponent } from "../../components/todo-counter/todo-counter.component";
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [TodoFormComponent, TodoItemComponent, TodoCounterComponent, FormsModule],
+  imports: [TodoFormComponent, TodoItemComponent, FormsModule],
   templateUrl: './todo-list.component.html',
   styleUrl: './todo-list.component.scss'
 })
 export class TodoListComponent {
-  todoList: WritableSignal<TodoData[]> = signal([])
+  todoList: WritableSignal<TodoData[]> = signal([{task: 'Teset', done: false}])
   todosDoneCounter = signal(this.todoList().filter(t => t.done).length)
   searchKey: string = ''
   filteredList = this.todoList()

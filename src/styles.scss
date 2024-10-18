@@ -25,6 +25,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
     line-height: 1;
+    background-color: rgb(23, 17, 57);
 }
 ol, ul {
     list-style: none;
@@ -57,4 +58,34 @@ ol, ul {
 body{
     font-size: 100%;
     list-style-type: none;
+    font-family: sans-serif;
+}
+
+input {
+  border: none;
+  background: #ececec;
+  padding: .75rem 0;
+  text-indent: 1rem;
+  border-radius: 2rem;
+}
+
+button {
+  border: none;
+  background: #ececec;
+  padding: .75rem 1rem;
+  border-radius: 2rem;
+  background: #fe9036;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ec8027;
+  }
+}
+
+.validations-list {
+  color: red;
+  font-size: x-small;
+  margin-top: .5rem;
 }
