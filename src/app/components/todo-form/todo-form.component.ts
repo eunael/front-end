@@ -28,6 +28,7 @@ export class TodoFormComponent {
       return
     }
     this.createdTask.emit({
+      id: 1,
       task: this.form.value.task,
       done: false
     })

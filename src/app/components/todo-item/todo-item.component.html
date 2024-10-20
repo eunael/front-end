@@ -19,9 +19,9 @@
     </form>
   } @else {
     <label class="task-container">
-      <input class="task-input-done" type="checkbox" [checked]="todo.done" (change)="toggleDone()">
+      <input class="task-input-done" type="checkbox" [checked]="todo?.done" (change)="toggleDone()">
       <div class="task-label">
-        <span class="task-text">{{todo.task}}</span>
+        <span class="task-text">{{todo?.task}}</span>
 
         <div class="task-actions">
           <button class="task-btn-edit" (click)="toggleEditing()">edit</button>

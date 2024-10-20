@@ -1,4 +1,5 @@
-export interface TodoData {
-  task: string,
-  done: boolean
+import { TodoBaseData } from "./todo-base-data";
+
+export interface TodoData extends TodoBaseData {
+  id: number
 }

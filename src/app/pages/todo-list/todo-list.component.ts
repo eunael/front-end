@@ -3,6 +3,7 @@ import { TodoFormComponent } from "../../components/todo-form/todo-form.componen
 import { TodoItemComponent } from '../../components/todo-item/todo-item.component';
 import { TodoData } from '../../components/todo-form/todo-data';
 import { FormsModule } from '@angular/forms';
+import { TodoBaseData } from '../../components/todo-form/todo-base-data';
 
 @Component({
   selector: 'app-todo-list',
@@ -12,10 +13,10 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './todo-list.component.scss'
 })
 export class TodoListComponent {
-  todoList: WritableSignal<TodoData[]> = signal([{task: 'Teset', done: false}])
+  todoList: WritableSignal<TodoData[]> = signal([])
   todosDoneCounter = signal(this.todoList().filter(t => t.done).length)
   searchKey: string = ''
-  filteredList = this.todoList()
+  filteredList: TodoData[]  = this.todoList()
 
   filterTasks()
   {
@@ -27,28 +28,33 @@ export class TodoListComponent {
     this.filteredList = this.todoList().filter((t: TodoData)  => t.task.toLowerCase().includes(this.searchKey.toLowerCase()))
   }
 
-  addTask($event: TodoData)
+  addTask($event: TodoBaseData)
   {
+    const id = this.generateTaskId()
     this.todoList.update(list => {
-      list.push($event)
+      list.push({
+        id,
+        task: $event.task,
+        done: $event.done
+      })
       return list
     })
     this.filterTasks()
   }
 
   updateTask($event: TodoData) {
-    const todoId = this.todoList().findIndex(todo => todo.task === $event.task)
-    if(todoId < 0) {return}
+    const taskIndex = this.todoList().findIndex(todo => todo.id === $event.id)
+    if(taskIndex < 0) {return}
     this.todoList.update(list => {
-      list[todoId] = $event
+      list[taskIndex] = $event
       return list
     })
     this.todosDoneCounter.set(this.todoList().filter(t => t.done).length)
     this.filterTasks()
   }
 
-  deleteTask($event: TodoData) {
-    const todoId = this.todoList().findIndex(todo => todo.task === $event.task)
+  deleteTask($event: number) {
+    const todoId = this.todoList().findIndex(todo => todo.id === $event)
     if(todoId < 0) {return}
     this.todoList.update(list => {
       list.splice(todoId, 1)
@@ -56,5 +62,13 @@ export class TodoListComponent {
     })
     this.todosDoneCounter.set(this.todoList().filter(t => t.done).length)
     this.filterTasks()
+  }
+
+  generateTaskId(): number
+  {
+    const lastPosition = this.todoList().length - 1
+    const lastTaskCreated = this.todoList().at(lastPosition)
+
+    return lastTaskCreated ? lastTaskCreated.id + 1 : 1
   }
 }

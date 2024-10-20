@@ -11,9 +11,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './todo-item.component.scss'
 })
 export class TodoItemComponent {
-  @Input() todo: TodoData = {task: '', done: false};
+  @Input() todo?: TodoData;
   @Output() updatedTask = new EventEmitter<TodoData>()
-  @Output() deletedTask = new EventEmitter<TodoData>()
+  @Output() deletedTask = new EventEmitter<number>()
   taskForm!: FormGroup
   editing: boolean = false
 
@@ -25,11 +25,13 @@ export class TodoItemComponent {
 
   ngOnInit() {
     this.taskForm.patchValue({
-      task: this.todo.task
+      task: this.todo?.task
     })
   }
 
   toggleDone() {
+    if(!this.todo) return
+
     this.todo.done = !this.todo.done
 
     this.updatedTask.emit(this.todo)
@@ -40,6 +42,8 @@ export class TodoItemComponent {
   }
 
   update() {
+    if(!this.todo) return
+
     if(!this.editing) {
       return
     } else if (!this.taskForm.valid) {
@@ -55,6 +59,8 @@ export class TodoItemComponent {
   }
 
   delete() {
-    this.deletedTask.emit(this.todo)
+    if(!this.todo) return
+
+    this.deletedTask.emit(this.todo.id)
   }
 }
