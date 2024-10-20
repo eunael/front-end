@@ -6,17 +6,17 @@ import { By } from '@angular/platform-browser';
 import { TodoItemComponent } from '../../components/todo-item/todo-item.component';
 import { TodoData } from '../../components/todo-form/todo-data';
 import { TodoBaseData } from '../../components/todo-form/todo-base-data';
+import { TodoFormComponent } from '../../components/todo-form/todo-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('TodoListComponent', () => {
   let component: TodoListComponent;
   let fixture: ComponentFixture<TodoListComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule(
-        Object.assign({}, {
-          imports: [TodoListComponent, TodoListComponent]
-        })
-    ).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [TodoListComponent, TodoListComponent, TodoFormComponent, ReactiveFormsModule],
+    }).compileComponents();
   });
   beforeEach(async () => {
     fixture = TestBed.createComponent(TodoListComponent);
@@ -126,5 +126,17 @@ describe('TodoListComponent', () => {
     const remainTasksId = component.todoList().map(t => t.id)
     expect(remainTasksId).not.toContain(firstTaskId)
     expect(remainTasksId).toContain(secondTaskId)
+  })
+
+  it('should create a new task by the form', function() {
+    const form = fixture.nativeElement.querySelector('.new-task-form')
+    const input = form.querySelector('input')
+    const taskName = 'Teste'
+    input.value = taskName
+    input.dispatchEvent(new Event('input'));
+    form.dispatchEvent(new Event('submit'))
+    fixture.detectChanges()
+
+    expect(component.todoList().map(t=>t.task)).toContain(taskName)
   })
 });
