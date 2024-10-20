@@ -12,8 +12,26 @@ import { ReactiveFormsModule } from '@angular/forms';
 describe('TodoListComponent', () => {
   let component: TodoListComponent;
   let fixture: ComponentFixture<TodoListComponent>;
+  let STORAGE_KEY: string;
+  // Mock do localStorage
+  const localStorageMock = (() => {
+    let store: { [key: string]: string } = {};
+    return {
+      getItem: (key: string) => store[key] || null,
+      setItem: (key: string, value: string) => {
+        store[key] = value;
+      },
+      clear: () => {
+        store = {};
+      },
+    };
+  })();
+
 
   beforeEach(async () => {
+    // Mocka o localStorage global
+    Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
     await TestBed.configureTestingModule({
       imports: [TodoListComponent, TodoListComponent, TodoFormComponent, ReactiveFormsModule],
     }).compileComponents();
@@ -22,6 +40,8 @@ describe('TodoListComponent', () => {
     fixture = TestBed.createComponent(TodoListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    STORAGE_KEY = component['STORAGE_KEY']
   })
 
   it('should create', () => {
@@ -40,6 +60,10 @@ describe('TodoListComponent', () => {
     fixture.detectChanges()
 
     expect(component.todoList()[1].id).toBe(2)
+
+    const tasksFromLS: TodoData[] = JSON.parse(localStorageMock.getItem(STORAGE_KEY) ?? "[]")
+    expect(tasksFromLS.length).not.toBe(0)
+    tasksFromLS.forEach(t => expect([1, 2]).toContain(t.id))
   })
 
   it('should shows tasks counter', () => {
@@ -67,6 +91,27 @@ describe('TodoListComponent', () => {
 
     const messageContainer = fixture.nativeElement.querySelector('.empty-todo-list-section')
     expect(messageContainer).toBeNull()
+  })
+
+  it('should list all tasks from local storage', () => {
+    const tasks: TodoData[] = [
+      { id: 1, task: 'Teste 1', done: false },
+      { id: 2, task: 'Teste 2', done: false }
+    ]
+
+    localStorageMock.setItem(STORAGE_KEY, JSON.stringify(tasks))
+
+    component.loadTodoTasksFromLocalStorage()
+    fixture.detectChanges()
+
+    expect(component.todoList()).toStrictEqual(tasks)
+
+    const tasksNames = tasks.map(t => t.task)
+    const todoItems = fixture.debugElement.queryAll(By.directive(TodoItemComponent))
+    todoItems.forEach((item) => {
+      const taskText = item.nativeElement.querySelector('.task-text').textContent
+      expect(tasksNames).toContain(taskText)
+    })
   })
 
   it('should shows message when there is no tasks to list', function() {
@@ -111,6 +156,10 @@ describe('TodoListComponent', () => {
     const secondTask: TodoData = {id: 2, task: 'First Task', done: true}
     component.updateTask(secondTask)
     expect(component.todoList()[1].done).toBeTruthy()
+
+    const tasksFromLS: TodoData[] = JSON.parse(localStorageMock.getItem(STORAGE_KEY) ?? "[]")
+    expect(tasksFromLS.at(0)).toStrictEqual(firstTask)
+    expect(tasksFromLS.at(1)).toStrictEqual(secondTask)
   })
 
   it('should deletes a task', function() {
@@ -126,6 +175,9 @@ describe('TodoListComponent', () => {
     const remainTasksId = component.todoList().map(t => t.id)
     expect(remainTasksId).not.toContain(firstTaskId)
     expect(remainTasksId).toContain(secondTaskId)
+
+    const tasksFromLS: TodoData[] = JSON.parse(localStorageMock.getItem(STORAGE_KEY) ?? "[]")
+    expect(tasksFromLS.map(t => t.id)).not.toContain(firstTaskId)
   })
 
   it('should create a new task by the form', function() {
@@ -186,4 +238,9 @@ describe('TodoListComponent', () => {
 
     expect(component.todoList().map(t => t.task)).not.toContain('Test 2')
   })
+
+  afterEach(() => {
+    // Limpa o mock do localStorage após cada teste
+    localStorage.clear();
+  });
 });

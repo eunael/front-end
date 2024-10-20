@@ -1,4 +1,4 @@
-import { Component, signal, WritableSignal } from '@angular/core';
+import { Component, effect, signal, WritableSignal } from '@angular/core';
 import { TodoFormComponent } from "../../components/todo-form/todo-form.component";
 import { TodoItemComponent } from '../../components/todo-item/todo-item.component';
 import { TodoData } from '../../components/todo-form/todo-data';
@@ -17,6 +17,11 @@ export class TodoListComponent {
   todosDoneCounter = signal(this.todoList().filter(t => t.done).length)
   searchKey: string = ''
   filteredList: TodoData[]  = this.todoList()
+  private STORAGE_KEY = 'MY_TODO_ITEMS'
+
+  constructor() {
+    this.loadTodoTasksFromLocalStorage()
+  }
 
   filterTasks()
   {
@@ -39,6 +44,7 @@ export class TodoListComponent {
       })
       return list
     })
+    this.storageTodoTaskAtTheLocalStorage()
     this.filterTasks()
   }
 
@@ -50,6 +56,7 @@ export class TodoListComponent {
       return list
     })
     this.todosDoneCounter.set(this.todoList().filter(t => t.done).length)
+    this.storageTodoTaskAtTheLocalStorage()
     this.filterTasks()
   }
 
@@ -61,6 +68,7 @@ export class TodoListComponent {
       return list
     })
     this.todosDoneCounter.set(this.todoList().filter(t => t.done).length)
+    this.storageTodoTaskAtTheLocalStorage()
     this.filterTasks()
   }
 
@@ -70,5 +78,19 @@ export class TodoListComponent {
     const lastTaskCreated = this.todoList().at(lastPosition)
 
     return lastTaskCreated ? lastTaskCreated.id + 1 : 1
+  }
+
+  loadTodoTasksFromLocalStorage() {
+    const stringTasks = localStorage.getItem(this.STORAGE_KEY)
+    if(stringTasks && stringTasks !== "[]") {
+      this.todoList.update(l => JSON.parse(stringTasks))
+    }
+    this.filterTasks()
+    this.todosDoneCounter.set(this.todoList().filter(t => t.done).length)
+  }
+
+  storageTodoTaskAtTheLocalStorage()
+  {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.todoList()))
   }
 }
