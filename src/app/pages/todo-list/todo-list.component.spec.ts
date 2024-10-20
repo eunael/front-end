@@ -139,4 +139,51 @@ describe('TodoListComponent', () => {
 
     expect(component.todoList().map(t=>t.task)).toContain(taskName)
   })
+
+  it('should edit task', ()  => {
+    component.addTask({task: 'Test 1', done: false})
+    component.addTask({task: 'Test 2', done: true})
+    fixture.detectChanges();
+
+    const firstTask = fixture.nativeElement.querySelector('.todo-item-section')
+    firstTask.querySelector('.task-btn-edit').dispatchEvent(new Event('click'))
+    fixture.detectChanges()
+    const firstForm = firstTask.querySelector('form.task-edit-form')
+    const firstInput = firstForm.querySelector('input.task-edit-input')
+    firstInput.value = 'Cool task'
+    firstInput.dispatchEvent(new Event('input'))
+    firstForm.dispatchEvent(new Event('submit'))
+    fixture.detectChanges()
+    expect(component.todoList().at(0)?.task).toBe('Cool task')
+
+    const secondTask = fixture.nativeElement.querySelectorAll('.todo-item-section').item(1)
+    secondTask.querySelector('.task-btn-edit').dispatchEvent(new Event('click'))
+    fixture.detectChanges()
+    const secondForm = secondTask.querySelector('form.task-edit-form')
+    const secondInput = secondForm.querySelector('input.task-edit-input')
+    secondInput.value = 'Awesome task'
+    secondInput.dispatchEvent(new Event('input'))
+    secondForm.dispatchEvent(new Event('submit'))
+    fixture.detectChanges()
+    expect(component.todoList().at(1)?.task).toBe('Awesome task')
+  })
+
+  it('should delete task', ()  => {
+    component.addTask({task: 'Test 1', done: false})
+    component.addTask({task: 'Test 2', done: true})
+    fixture.detectChanges();
+
+    const firstTask = fixture.nativeElement.querySelector('.todo-item-section')
+    firstTask.querySelector('.task-btn-delete').dispatchEvent(new Event('click'))
+    fixture.detectChanges()
+
+    expect(component.todoList().map(t => t.task)).not.toContain('Test 1')
+    expect(component.todoList().map(t => t.task)).toContain('Test 2')
+
+    const secondTask = fixture.nativeElement.querySelector('.todo-item-section')
+    secondTask.querySelector('.task-btn-delete').dispatchEvent(new Event('click'))
+    fixture.detectChanges()
+
+    expect(component.todoList().map(t => t.task)).not.toContain('Test 2')
+  })
 });
