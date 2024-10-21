@@ -1,5 +1,5 @@
 {
-  "name": "my-angular-app",
+  "name": "ng-todolist",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,7 +7,7 @@
     "build": "ng build && npm run process",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:my-angular-app": "node dist/my-angular-app/server/server.mjs",
+    "serve:ssr:ng-todolist": "node dist/ng-todolist/server/server.mjs",
     "process": "node ./tools/copy-files.mjs && node ./tools/alter-polyfills.mjs",
     "deploy": "npm run build && wrangler pages deploy dist/cloudflare"
   },
