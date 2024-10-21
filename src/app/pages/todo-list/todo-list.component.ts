@@ -4,6 +4,7 @@ import { TodoItemComponent } from '../../components/todo-item/todo-item.componen
 import { TodoData } from '../../components/todo-form/todo-data';
 import { FormsModule } from '@angular/forms';
 import { TodoBaseData } from '../../components/todo-form/todo-base-data';
+import { LocalStorageServiceService } from '../../services/local-storage-service.service';
 
 @Component({
   selector: 'app-todo-list',
@@ -19,7 +20,7 @@ export class TodoListComponent {
   filteredList: TodoData[]  = this.todoList()
   private STORAGE_KEY = 'MY_TODO_ITEMS'
 
-  constructor() {
+  constructor(private storage: LocalStorageServiceService) {
     this.loadTodoTasksFromLocalStorage()
   }
 
@@ -81,7 +82,7 @@ export class TodoListComponent {
   }
 
   loadTodoTasksFromLocalStorage() {
-    const stringTasks = localStorage.getItem(this.STORAGE_KEY)
+    const stringTasks = this.storage.getItem(this.STORAGE_KEY)
     if(stringTasks && stringTasks !== "[]") {
       this.todoList.update(l => JSON.parse(stringTasks))
     }
@@ -91,6 +92,6 @@ export class TodoListComponent {
 
   storageTodoTaskAtTheLocalStorage()
   {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.todoList()))
+    this.storage.setItem(this.STORAGE_KEY, JSON.stringify(this.todoList()))
   }
 }
