@@ -1,0 +1,33 @@
+<section class="todo-item-section">
+  @if(editing) {
+    <form [formGroup]="taskForm" (submit)="update()" class="task-edit-form">
+      <div class="task-edit-container">
+        <fieldset class="task-edit-input-container">
+          <input type="text" formControlName="task" class="task-edit-input">
+
+          <div class="task-edit-actions">
+            <button type="submit">save</button>
+            <button type="button" (click)="toggleEditing()">cancel</button>
+          </div>
+        </fieldset>
+
+        <div class="validations-list" *ngIf="taskForm.controls['task'].invalid && (taskForm.controls['task'].dirty || taskForm.controls['task'].touched)">
+          <div *ngIf="taskForm.controls['task'].hasError('required')">Task is required.</div>
+          <div *ngIf="taskForm.controls['task'].hasError('minlength')">Task must be at least 4 characters long.</div>
+        </div>
+      </div>
+    </form>
+  } @else {
+    <label class="task-container">
+      <input class="task-input-done" type="checkbox" [checked]="todo?.done" (change)="toggleDone()">
+      <div class="task-label">
+        <span class="task-text">{{todo?.task}}</span>
+
+        <div class="task-actions">
+          <button class="task-btn-edit" (click)="toggleEditing()">edit</button>
+          <button class="task-btn-delete" (click)="delete()">delete</button>
+        </div>
+      </div>
+    </label>
+  }
+</section>

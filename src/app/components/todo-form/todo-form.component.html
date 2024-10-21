@@ -1,0 +1,10 @@
+<form [formGroup]="form" (submit)="save()" class="new-task-form">
+  <fieldset>
+    <input type="text" formControlName="task" id="task" required autocomplete="off" placeholder="New task">
+    <button type="submit">save</button>
+  </fieldset>
+  <div class="validations-list" *ngIf="form.controls['task'].invalid && (form.controls['task'].dirty || form.controls['task'].touched)">
+    <div *ngIf="form.controls['task'].hasError('required')">Task is required.</div>
+    <div *ngIf="form.controls['task'].hasError('minlength')">Task must be at least 4 characters long.</div>
+  </div>
+</form>
