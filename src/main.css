@@ -20,6 +20,11 @@
 	font-family: 'montserrat', sans-serif;
 }
 
+.app {
+	max-width: 992px;
+	margin: 0 auto;
+}
+
 input:not([type="radio"]):not([type="checkbox"]), button {
 	appearance: none;
 	border: none;
@@ -191,10 +196,14 @@ input:checked ~ .bubble::after {
 
 .todo-item .todo-content {
 	flex: 1 1 0%;
+	margin-right: 1rem;
 }
 
 .todo-item .todo-content input {
 	color: var(--dark);
+	width: 100%;
+	text-wrap: wrap;
+	margin-right: 1rem;
 }
 
 .todo-item .actions {
