@@ -1,4 +1,5 @@
 <script lang="ts">
+import { KeepAlive } from 'vue';
 import MostrarReceitas from './MostrarReceitas.vue';
 import SelecionarIngredientes from './SelecionarIngredientes.vue';
 import Tag from './Tag.vue';
@@ -12,7 +13,7 @@ export default {
             conteudo: 'SelecionarIngredientes' as Pagina
         }
     },
-    components: {SelecionarIngredientes,Tag,MostrarReceitas},
+    components: {SelecionarIngredientes,Tag,MostrarReceitas,KeepAlive},
     methods: {
       adicionarIngrediente(ingrediente: string) {
         this.ingredientes.push(ingrediente)
@@ -47,15 +48,17 @@ export default {
             </p>
         </section>
 
-        <SelecionarIngredientes
-          v-if="conteudo === 'SelecionarIngredientes'"
-          @adicionar-ingrediente="adicionarIngrediente"
-          @remover-ingrediente="removerIngrediente"
-          @buscar-receitas="navegar('MostrarReceitas')"/>
+        <KeepAlive include="SelecionarIngredientes">
+          <SelecionarIngredientes
+            v-if="conteudo === 'SelecionarIngredientes'"
+            @adicionar-ingrediente="adicionarIngrediente"
+            @remover-ingrediente="removerIngrediente"
+            @buscar-receitas="navegar('MostrarReceitas')"/>
 
-        <MostrarReceitas
-          v-else-if="conteudo === 'MostrarReceitas'"
-          @editar-receitas="navegar('SelecionarIngredientes')"/>
+          <MostrarReceitas
+            v-else-if="conteudo === 'MostrarReceitas'"
+            @editar-receitas="navegar('SelecionarIngredientes')"/>
+        </KeepAlive>
           
     </main>
 </template>
